@@ -1,0 +1,354 @@
+{
+  "version": "YL v0",
+  "area": "ask-choose-pick",
+  "vectors": [
+    {
+      "name": "ask quoted question",
+      "input": "ask \"Log this set?\"",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "ask",
+          "id": "n1",
+          "props": {
+            "q": "Log this set?"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ask bare question",
+      "input": "ask Log this set?",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "ask",
+          "id": "n1",
+          "props": {
+            "q": "Log this set?"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ask with options",
+      "input": "ask \"Send the invite now?\" \"Yes, send\"|\"Not yet\"",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "ask",
+          "id": "n1",
+          "props": {
+            "options": [
+              "Yes, send",
+              "Not yet"
+            ],
+            "q": "Send the invite now?"
+          }
+        }
+      ]
+    },
+    {
+      "name": "ask with no args",
+      "input": "ask",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "ask",
+          "id": "n1",
+          "props": {}
+        }
+      ]
+    },
+    {
+      "name": "ask: first options token wins, later ones are text",
+      "input": "ask Pick A|B C|D",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "ask",
+          "id": "n1",
+          "props": {
+            "options": [
+              "A",
+              "B"
+            ],
+            "q": "Pick C|D"
+          }
+        }
+      ]
+    },
+    {
+      "name": "choose with other",
+      "input": "choose \"What are we training?\" Push|Pull|Legs +other",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "choose",
+          "id": "n1",
+          "props": {
+            "options": [
+              "Push",
+              "Pull",
+              "Legs"
+            ],
+            "q": "What are we training?",
+            "other": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "choose options before question text",
+      "input": "choose Push|Pull Which one?",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "choose",
+          "id": "n1",
+          "props": {
+            "options": [
+              "Push",
+              "Pull"
+            ],
+            "q": "Which one?"
+          }
+        }
+      ]
+    },
+    {
+      "name": "pick with max and submit",
+      "input": "pick \"Gear\" Dumbbells|Bench|Bands max=2 submit=Go +other",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "pick",
+          "id": "n1",
+          "props": {
+            "options": [
+              "Dumbbells",
+              "Bench",
+              "Bands"
+            ],
+            "q": "Gear",
+            "other": true,
+            "max": 2,
+            "submit": "Go"
+          }
+        }
+      ]
+    },
+    {
+      "name": "q and options by key",
+      "input": "ask q=\"Ready?\" options=Go|Wait",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "ask",
+          "id": "n1",
+          "props": {
+            "q": "Ready?",
+            "options": [
+              "Go",
+              "Wait"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "choose +lock on the line",
+      "input": "choose \"Table for\" 2|4|6 +lock",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "choose",
+          "id": "n1",
+          "props": {
+            "options": [
+              "2",
+              "4",
+              "6"
+            ],
+            "q": "Table for",
+            "lock": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "lock patched on by id",
+      "input": "choose@booking \"Table for\" 2|4|6\n~booking +lock",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "choose",
+          "id": "booking",
+          "props": {
+            "options": [
+              "2",
+              "4",
+              "6"
+            ],
+            "q": "Table for"
+          }
+        },
+        {
+          "op": "patch",
+          "screen": "1",
+          "target": "booking",
+          "props": {
+            "lock": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "lock patched on by preset name (reaches an earlier reply)",
+      "input": "~choose +lock",
+      "expected": [
+        {
+          "op": "patch",
+          "screen": "1",
+          "target": "choose",
+          "props": {
+            "lock": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "lock patched off",
+      "input": "~pick lock=off",
+      "expected": [
+        {
+          "op": "patch",
+          "screen": "1",
+          "target": "pick",
+          "props": {
+            "lock": false
+          }
+        }
+      ]
+    },
+    {
+      "name": "loose options: quoted tokens after a quoted question",
+      "input": "choose \"Where should it go?\" \"Camera roll\" \"Drafts\"",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "choose",
+          "id": "n1",
+          "props": {
+            "options": [
+              "Camera roll",
+              "Drafts"
+            ],
+            "q": "Where should it go?"
+          }
+        }
+      ]
+    },
+    {
+      "name": "loose options: bare question, quoted options",
+      "input": "pick Which gear? \"Pull-up bar\" \"Bands\" \"Dumbbells\" +other",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "pick",
+          "id": "n1",
+          "props": {
+            "options": [
+              "Pull-up bar",
+              "Bands",
+              "Dumbbells"
+            ],
+            "q": "Which gear?",
+            "other": true
+          }
+        }
+      ]
+    },
+    {
+      "name": "loose options on ask",
+      "input": "ask \"Send the invite now?\" \"Yes, send\" \"Not yet\"",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "ask",
+          "id": "n1",
+          "props": {
+            "options": [
+              "Yes, send",
+              "Not yet"
+            ],
+            "q": "Send the invite now?"
+          }
+        }
+      ]
+    },
+    {
+      "name": "loose options: one quoted token is not a list, it stays question text",
+      "input": "choose \"Which one?\" \"the red\"",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "choose",
+          "id": "n1",
+          "props": {
+            "q": "Which one? the red"
+          }
+        }
+      ]
+    },
+    {
+      "name": "loose options: a bare word after the quotes stops the run",
+      "input": "choose \"Pick\" \"Red\" \"Blue\" please",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "choose",
+          "id": "n1",
+          "props": {
+            "q": "Pick Red Blue please"
+          }
+        }
+      ]
+    },
+    {
+      "name": "loose options: an options token wins, quotes stay question text",
+      "input": "choose \"Q?\" \"A\" \"B\" C|D",
+      "expected": [
+        {
+          "op": "add",
+          "screen": "1",
+          "preset": "choose",
+          "id": "n1",
+          "props": {
+            "options": [
+              "C",
+              "D"
+            ],
+            "q": "Q? A B"
+          }
+        }
+      ]
+    }
+  ]
+}
